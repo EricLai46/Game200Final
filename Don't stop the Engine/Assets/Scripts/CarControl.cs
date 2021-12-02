@@ -26,6 +26,11 @@ public class CarControl : MonoBehaviour
     public float currentenginepower = 0.0f;
     public static Quaternion carrotation;
     public GameObject explosion;
+    public GameObject bombtimetext;
+    public float resetbombtime;
+    public GameObject lifetext;
+    public GameObject panel;
+    public GameObject paneldeadtext;
     void Start()
     {
         maxangle = 30;
@@ -37,6 +42,7 @@ public class CarControl : MonoBehaviour
         this.GetComponent<AudioSource>().Play();
         //warningtext.GetComponent<Text>().text = "";
         explosion.SetActive(false);
+        resetbombtime = 1.0f;
         
     }
 
@@ -50,6 +56,7 @@ public class CarControl : MonoBehaviour
         
         if (istime)
         {
+            updatebombtime();
             move();
             updateengine();
             checkspeed();
@@ -172,5 +179,65 @@ public class CarControl : MonoBehaviour
             this.GetComponent<AudioSource>().loop = true;
             this.GetComponent<AudioSource>().Play();
         }
+    }
+    void updatebombtime()
+    {
+        if (GameManager.bombtimei < 10&&(rb.velocity.magnitude/0.27f<50))
+        {
+            GameManager.bombtimef += Time.deltaTime;
+            GameManager.bombtimei = (int)GameManager.bombtimef;
+            bombtimetext.GetComponent<Text>().text ="BOMBLEFT!: "+ GameManager.bombtimef.ToString();
+        }
+        else if((rb.velocity.magnitude / 0.27f) >= 50 && GameManager.bombtimei>0)
+        {
+            GameManager.bombtimef -= Time.deltaTime;
+            if (GameManager.bombtimef <= 0)
+                GameManager.bombtimef = 0.0f;
+            GameManager.bombtimei = (int)GameManager.bombtimef;
+            bombtimetext.GetComponent<Text>().text = "BOMBLEFT!: " + GameManager.bombtimef.ToString();
+        }
+        else if(GameManager.bombtimei >= 10)
+        {
+            StartCoroutine(bombeffect());
+           
+            this.GetComponent<AudioSource>().clip = soundcontrol[4];
+
+            this.GetComponent<AudioSource>().loop = false;
+            this.GetComponent<AudioSource>().Play();
+           
+            
+        }
+    }
+    IEnumerator bombeffect()
+    {
+        while (resetbombtime >= 0)
+        {
+            GameManager.bombtimei = 0;
+            GameManager.bombtimef = 0.0f;
+            explosion.SetActive(true);
+            yield return new WaitForSeconds(1);
+           resetbombtime--;
+        }
+        explosion.SetActive(false);
+        
+        this.transform.position = new Vector3(CheckPoints.currentcheckpoint.x, 2, CheckPoints.currentcheckpoint.z);
+        if (GameManager.totallife > 0)
+        {
+            GameManager.totallife--;
+            lifetext.GetComponent<Text>().text = "LIFE: " + GameManager.totallife.ToString();
+        }
+        else if(GameManager.totallife == 0)
+        {
+            istime = false;
+            lifetext.GetComponent<Text>().text = "LIFE: " + GameManager.totallife.ToString();
+            this.GetComponent<AudioSource>().clip = soundcontrol[5];
+            this.GetComponent<AudioSource>().playOnAwake = false;
+
+            this.GetComponent<AudioSource>().Play();
+            panel.SetActive(true);
+            paneldeadtext.GetComponent<Text>().text = "YOU DIED! PRESS BUTTON TO PLAY IT AGAIN!";
+        }
+        bombtimetext.GetComponent<Text>().text = "BOMBLEFT!: " + GameManager.bombtimef.ToString();
+        resetbombtime = 1.0f;
     }
 }

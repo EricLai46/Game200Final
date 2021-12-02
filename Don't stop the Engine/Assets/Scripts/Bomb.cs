@@ -12,10 +12,14 @@ public class Bomb : MonoBehaviour
     public GameObject lifetext;
     public WheelCollider[] wheel;
     public AudioClip[] soundcontrol;
+    public GameObject panel;
+    public GameObject paneldeadtext;
+    GameManager gameManager;
     void Start()
     {
         //deadtext.GetComponent<Text>().text = "";
         starttime = 1.0f;
+        paneldeadtext.GetComponent<Text>().text = "";
     }
 
     // Update is called once per frame
@@ -63,10 +67,15 @@ public class Bomb : MonoBehaviour
         lifetext.GetComponent<Text>().text = "LIFE: " + GameManager.totallife.ToString();
         else if(GameManager.totallife==0)
         {
+            CarControl.istime = false;
+            lifetext.GetComponent<Text>().text = "LIFE: " + GameManager.totallife.ToString();
             this.GetComponent<AudioSource>().clip = soundcontrol[0];
             this.GetComponent<AudioSource>().playOnAwake = false;
            
             this.GetComponent<AudioSource>().Play();
+            panel.SetActive(true);
+            paneldeadtext.GetComponent<Text>().text = "YOU DIED! PRESS BUTTON TO PLAY IT AGAIN!";
+
         }
     }
 }

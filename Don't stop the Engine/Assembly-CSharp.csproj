@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\Bomb.cs" />
     <Compile Include="Assets\mountain-race-track\Standard Assets\Environment\Water (Basic)\Scripts\WaterBasic.cs" />
     <Compile Include="Assets\Scripts\CarControl.cs" />
+    <Compile Include="Assets\Scripts\ItemCollect.cs" />
     <Compile Include="Assets\Scripts\FinshLine.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Speedometer.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="Assets\TurnTheGameOn\Arrow WayPointer\DemoContent\CharacterController\Scripts\CharacterControllerThirdPerson.cs" />
     <Compile Include="Assets\Scripts\CheckPoints.cs" />
     <Compile Include="Assets\TurnTheGameOn\Arrow WayPointer\DemoContent\CharacterController\Scripts\UserControlThirdPerson.cs" />
-    <Compile Include="Assets\Scripts\ItemCollect.cs" />
+    <Compile Include="Assets\Scripts\Buttonclick.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Free Pack\Tropical Moments\Tropical Moments readme.txt" />

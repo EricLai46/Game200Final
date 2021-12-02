@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject lifetext;
     public GameObject scoretext;
     public GameObject player;
-    
+    public static float bombtimef;
+    public static int bombtimei;
     public int currentspeed;
     public Rigidbody rb;
     public static bool isfinished;
@@ -22,6 +23,11 @@ public class GameManager : MonoBehaviour
     public GameObject wintext;
     public float readygotime = 2.0f;
     public GameObject winscoretext;
+    public GameObject panel;
+    public GameObject panelwintext;
+    public GameObject bombtimetext;
+    //public GameObject paneldeatext;
+
     void Start()
     {
         currentlife = totallife;
@@ -31,7 +37,12 @@ public class GameManager : MonoBehaviour
         currentspeed = (int)(rb.velocity.magnitude/0.277f);
         isfinished = false;
         wintext.GetComponent<Text>().text = "";
-        
+        panel.SetActive(false);
+        //paneldeatext.GetComponent<Text>().text = "";
+        panelwintext.GetComponent<Text>().text = "";
+        bombtimef = 0.0f;
+        bombtimei = 0;
+
     }
 
     // Update is called once per frame
@@ -82,9 +93,12 @@ public class GameManager : MonoBehaviour
             {
                 if (i == 5)
                 {
+                    CarControl.istime = false;
                     player.GetComponent<AudioSource>().Stop();
                     wintext.GetComponent<Text>().text = "FINISHED 1ST";
                     winscoretext.GetComponent<Text>().text = score.ToString();
+                    panel.SetActive(true);
+                    panelwintext.GetComponent<Text>().text = "YEAH! YOU DID IT! DO YOU WANT TO REPLAY?";
                     if (!this.GetComponent<AudioSource>().isPlaying)
                     {
                         this.GetComponent<AudioSource>().loop = true;

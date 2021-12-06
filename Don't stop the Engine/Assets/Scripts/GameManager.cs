@@ -40,8 +40,8 @@ public class GameManager : MonoBehaviour
         panel.SetActive(false);
         //paneldeatext.GetComponent<Text>().text = "";
         panelwintext.GetComponent<Text>().text = "";
-        bombtimef = 0.0f;
-        bombtimei = 0;
+        bombtimef = 10.0f;
+        bombtimei = 10;
 
     }
 

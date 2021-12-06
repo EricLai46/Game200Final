@@ -50,7 +50,10 @@ public class Bomb : MonoBehaviour
     {
         while (starttime >= 0)
         {
-
+            
+                
+                player.GetComponent<Collider>().GetComponent<Rigidbody>().AddExplosionForce(20000f, this.transform.position, 30.0f, 5.0f, ForceMode.Impulse);
+            
             explosion.SetActive(true);
             yield return new WaitForSeconds(1);
             starttime--;

@@ -31,6 +31,8 @@ public class CarControl : MonoBehaviour
     public GameObject lifetext;
     public GameObject panel;
     public GameObject paneldeadtext;
+    public GameObject blowpoint;
+    public bool isblow;
     void Start()
     {
         maxangle = 30;
@@ -43,7 +45,7 @@ public class CarControl : MonoBehaviour
         //warningtext.GetComponent<Text>().text = "";
         explosion.SetActive(false);
         resetbombtime = 1.0f;
-        
+        isblow = false;
     }
 
     // Update is called once per frame
@@ -182,22 +184,23 @@ public class CarControl : MonoBehaviour
     }
     void updatebombtime()
     {
-        if (GameManager.bombtimei < 10&&(rb.velocity.magnitude/0.27f<50))
+        if (GameManager.bombtimei > 0&&(rb.velocity.magnitude/0.27f<45)&&!isblow)
         {
-            GameManager.bombtimef += Time.deltaTime;
+            GameManager.bombtimef -= Time.deltaTime;
             GameManager.bombtimei = (int)GameManager.bombtimef;
             bombtimetext.GetComponent<Text>().text ="BOMBLEFT!: "+ GameManager.bombtimef.ToString();
         }
-        else if((rb.velocity.magnitude / 0.27f) >= 50 && GameManager.bombtimei>0)
+        else if((rb.velocity.magnitude / 0.27f) >= 45 && GameManager.bombtimei>0)
         {
-            GameManager.bombtimef -= Time.deltaTime;
-            if (GameManager.bombtimef <= 0)
-                GameManager.bombtimef = 0.0f;
+            GameManager.bombtimef += Time.deltaTime;
+            if (GameManager.bombtimef >= 10)
+                GameManager.bombtimef = 10.0f;
             GameManager.bombtimei = (int)GameManager.bombtimef;
             bombtimetext.GetComponent<Text>().text = "BOMBLEFT!: " + GameManager.bombtimef.ToString();
         }
-        else if(GameManager.bombtimei >= 10)
+        else if(GameManager.bombtimei <= 0)
         {
+            isblow = true;
             StartCoroutine(bombeffect());
            
             this.GetComponent<AudioSource>().clip = soundcontrol[4];
@@ -212,15 +215,19 @@ public class CarControl : MonoBehaviour
     {
         while (resetbombtime >= 0)
         {
-            GameManager.bombtimei = 0;
-            GameManager.bombtimef = 0.0f;
+            this.GetComponent<BoxCollider>().GetComponent<Rigidbody>().AddExplosionForce(20000f, blowpoint.transform.position, 30.0f, 5.0f, ForceMode.Impulse);
+            GameManager.bombtimei = 10;
+            GameManager.bombtimef = 10.0f;
             explosion.SetActive(true);
             yield return new WaitForSeconds(1);
            resetbombtime--;
         }
+       
         explosion.SetActive(false);
+       
         
         this.transform.position = new Vector3(CheckPoints.currentcheckpoint.x, 2, CheckPoints.currentcheckpoint.z);
+        isblow = false;
         if (GameManager.totallife > 0)
         {
             GameManager.totallife--;
@@ -239,5 +246,9 @@ public class CarControl : MonoBehaviour
         }
         bombtimetext.GetComponent<Text>().text = "BOMBLEFT!: " + GameManager.bombtimef.ToString();
         resetbombtime = 1.0f;
+    }
+    void carflyaway()
+    {
+
     }
 }
